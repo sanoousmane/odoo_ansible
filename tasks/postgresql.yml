@@ -1,0 +1,46 @@
+---
+# tasks file for odoo_ansible
+- name: install postgresql packages and dependancy
+  yum: name={{ item }} state=latest
+  with_items:
+    - postgresql-server
+    - postgresql-devel
+    - postgresql-contrib
+    - python-psycopg2
+
+- name: Initiate postgresql database
+  shell: postgresql-setup initdb
+  register: already_done
+  failed_when: already_done.rc == 0
+
+- name: start postgresql and enabled at boot
+  service: name=postgresql state=started  enabled=yes
+
+- name: Authorize postgresql port 
+  shell: firewall-cmd --add-port=5432/tcp --permanent
+
+- name: reload firewall
+  shell: firewall-cmd --reload
+
+- name: Ensure PostgreSQL is listening on all localhost
+  lineinfile: dest=/var/lib/pgsql/data/postgresql.conf
+    regexp='^#?listen_addresses\s*='
+    line="listen_addresses = '*'"
+    state=present
+
+
+- lineinfile: dest=/var/lib/pgsql/data/pg_hba.conf
+    regexp='host\s+all\s+all\s+127.0.0.1/32\s+md5'
+    line='host all all 0.0.0.0/0 trust'
+    insertbefore=BOF
+  notify: restart postgresql
+
+
+- name: Create user and password for odoo ansible 
+  postgresql_user: 
+    name: "{{ dbuser }}"
+    password: "{{ dbpass }}"
+    role_attr_flags: CREATEDB,NOSUPERUSER
+    state: present
+    login_user: postgres
+  tags: user_create

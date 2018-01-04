@@ -1,0 +1,27 @@
+---
+
+- name: create folder for containers
+  file:
+    path: /var/containers/{{ contn }}/{{ item }}
+    state: directory
+    mode: 0755
+  with_items:
+     - confs
+     - logs
+  tags: odoo
+
+- name: ensure odoo container is running
+  docker_container:
+    image: manous/odoo9
+    name: "{{ contn }}"
+    ports:
+      - "8007:8069"
+    volumes:
+      - /var/containers/{{ contn }}/confs:/etc/odoo
+      - /var/containers/{{ contn }}/logs:/var/log/odoo
+    state: started
+  tags: odoo
+
+- name: Copy odoo config files
+  template: src=openerp-server.conf.j2 dest=/var/containers/{{ contn }}/confs/openerp-server.conf backup=yes
+  tags: odoo

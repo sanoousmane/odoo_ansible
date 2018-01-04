@@ -1,2 +1,6 @@
 ---
 # handlers file for odoo_ansible
+- name: restart postgresql
+  service:
+    name: postgresql
+    state: restarted

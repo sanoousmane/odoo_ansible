@@ -1,2 +1,9 @@
+# Install repositories
 ---
-# tasks file for odoo_ansible
+
+- import_tasks: install_docker.yml
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version|int == 7"
+- import_tasks: postgresql.yml
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version|int == 7"
+- import_tasks: odoo.yml
+  when: "ansible_distribution == 'CentOS' and ansible_distribution_major_version|int == 7"

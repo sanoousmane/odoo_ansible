@@ -1,2 +1,11 @@
 ---
 # defaults file for odoo_ansible
+#dbname: odootest
+ansible_default_ipv4_address: 192.168.122.46
+odoo_pass: mypass
+pgsql_user: testuser1
+pgsql_pass: odoo123
+dbuser: testuser1
+dbpass: odoo123
+contn: cont1
+db_host_ip: 192.168.122.46

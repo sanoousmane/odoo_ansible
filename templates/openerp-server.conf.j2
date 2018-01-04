@@ -1,0 +1,12 @@
+[options]
+addons_path = /mnt/extra-addons,/usr/lib/python2.7/site-packages/openerp/addons
+data_dir = /var/lib/odoo
+auto_reload = True
+admin_passwd = {{ odoo_pass }}
+db_host = {{ db_host_ip }}
+db_port = 5432
+db_user = {{ pgsql_user }}
+db_password = {{ pgsql_pass }}
+xmlrpc_port = 8069 
+xmlrpcs_port = 8071
+logfile= /var/log/odoo/openerp-server.log
